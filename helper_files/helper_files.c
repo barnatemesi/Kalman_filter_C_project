@@ -180,14 +180,11 @@ float32_t mw_linear_scheduling(const float32_t scheduling_val, const float32_t A
 bool mw_compare_vectors_f32(const float32_t *first_vec_inp, const float32_t *second_vec_inp, uint32_t vec_len)
 {
 	float32_t stack_eps = 0.001F;
-	bool stack_status[vec_len];
 	uint32_t stack_status_sum = 0U;
-	(void)memset(&stack_status, 0U, sizeof(stack_status));
 
 	for (size_t i=0; i<vec_len; ++i)
 	{
-		stack_status[i] = !mw_float_comparison(*(first_vec_inp + i), *(second_vec_inp + i),stack_eps);
-		stack_status_sum =+ (uint32_t)stack_status[i];
+		stack_status_sum += (uint32_t) !mw_float_comparison(*(first_vec_inp + i), *(second_vec_inp + i),stack_eps);
 	}
 
 	if (stack_status_sum == 0)

@@ -43,6 +43,17 @@ Kalman_Filter_T kf_signals_vector = {
     .general_status = true,
 };
 
+/* Global variables storing the test vectors */
+float32_t signal_no0[LEN_OF_DATA];
+float32_t signal_no1[LEN_OF_DATA];
+float32_t signal_no2[LEN_OF_DATA];
+float32_t signal_no3[LEN_OF_DATA];
+
+float32_t ref_signal_no0[LEN_OF_DATA];
+float32_t ref_signal_no1[LEN_OF_DATA];
+float32_t ref_signal_no2[LEN_OF_DATA];
+float32_t ref_signal_no3[LEN_OF_DATA];
+
 /* Declaration of input scalar and measurement vector */
 const float32_t u_vect[NUMOFROWS_U] = {5.0F};
 
@@ -52,14 +63,7 @@ int main(void)
 {
     /* Init */
     Ret_T ret_check = NOTVALID;
-    static float32_t signal_no0[LEN_OF_DATA];
-    (void)memset(signal_no0, 0U, sizeof(signal_no0));
-    static float32_t signal_no1[LEN_OF_DATA];
-    (void)memset(signal_no1, 0U, sizeof(signal_no1));
-    static float32_t signal_no2[LEN_OF_DATA];
-    (void)memset(signal_no2, 0U, sizeof(signal_no2));
-    static float32_t signal_no3[LEN_OF_DATA];
-    (void)memset(signal_no3, 0U, sizeof(signal_no3));
+
 
 #ifndef DEBUG_PRINT
     fpt = fopen(file_name, "w+");
@@ -93,6 +97,11 @@ int main(void)
     for (size_t i=0; i<TIMESTEPS; ++i)
     {
     	VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector);
+
+    	if (!ret_of_kf.status)
+    	{
+    		printf("An error has occurred during the KF computation!\n");
+    	}
         
     #ifdef DEBUG_PRINT
         printf("idx is: %d\n", (int)i);
@@ -120,15 +129,6 @@ int main(void)
     uint32_t row_ID = 0U;
     size_t i_iter = 0U;
     float32_t w_spindle_ref, T_motor_ref, T_rider_ref, T_load_ref = 0.0F;
-
-    static float32_t ref_signal_no0[LEN_OF_DATA];
-    (void)memset(ref_signal_no0, 0U, sizeof(ref_signal_no0));
-    static float32_t ref_signal_no1[LEN_OF_DATA];
-    (void)memset(ref_signal_no1, 0U, sizeof(ref_signal_no1));
-    static float32_t ref_signal_no2[LEN_OF_DATA];
-    (void)memset(ref_signal_no2, 0U, sizeof(ref_signal_no2));
-    static float32_t ref_signal_no3[LEN_OF_DATA];
-    (void)memset(ref_signal_no3, 0U, sizeof(ref_signal_no3));
 
     /* Read reference data in from file */
     while (fscanf(fpt_ref, "%u, %f, %f, %f, %f", &row_ID, &w_spindle_ref, &T_motor_ref,
@@ -159,6 +159,7 @@ int main(void)
     
     #ifndef DEBUG_PRINT
         fclose(fpt);
+        fclose(fpt_ref);
         
         printf("***********************************************************\n");
         printf("A Kalman filter validation file was successfully created in the Workspace folder under the name of: %s \n", file_name);

@@ -12,7 +12,7 @@ static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, co
 //
 static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp);
 //
-static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], uint32_t len_of_vec);
+static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], const uint32_t len_of_vec);
 
 /* Global variables */
 static VectorT vector_x_k_1_state = {
@@ -20,7 +20,7 @@ static VectorT vector_x_k_1_state = {
     .arr_cap = NUMOFROWS,
 };
 
-static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], uint32_t len_of_vec)
+static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], const uint32_t len_of_vec)
 {
     Ret_T return_val = NOTVALID;
     
@@ -34,7 +34,7 @@ static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t 
         return_val = VALID;
     }
     
-    for (size_t i=0; i<len_of_vec; i++)
+    for (size_t i=0; i<len_of_vec; ++i)
     {
         vect_result->vector[i] = vector_inp[i];
     }
@@ -57,11 +57,12 @@ Ret_T init_kf_matrices(void)
 VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
 {
     /* INIT */
-    VectorT y_est_vector_obj;
+    VectorT y_est_vector_obj = {
+    		.arr_cap = NUMOFROWS,
+			.rows = NUMOFROWS,
+			.status = false,
+    };
     mw_init_array(y_est_vector_obj.vector, 0U, NUMOFROWS);
-    y_est_vector_obj.arr_cap = NUMOFROWS;
-    y_est_vector_obj.rows = NUMOFROWS;
-    y_est_vector_obj.status = false;
     
     VectorT vector_u_used = {
             .rows = NUMOFROWS_U + NUMOFROWS_SENSOR_MEAS,
@@ -72,6 +73,7 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
     /* Control signal input + sensor measured signals have to fit in vector_u_used */
     if (vectors_inp->control_signal_inp.rows + vectors_inp->y_meas_inp.rows > NUMOFROWS)
     {
+    	/* Return it with false status */
         return y_est_vector_obj;
     }
     
@@ -101,28 +103,28 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
 
 static inline VectorT vector_add(const VectorT *first_vector, const VectorT *second_vector)
 {
-    VectorT temp_vect_object;
-    
-    mw_init_array(temp_vect_object.vector, 0.0F, NUMOFROWS);
-    temp_vect_object.rows = NUMOFROWS;
-    temp_vect_object.arr_cap = NUMOFROWS;
-    temp_vect_object.status = false;
+    VectorT temp_vector_object = {
+    		.rows = NUMOFROWS,
+			.arr_cap = NUMOFROWS,
+			.status = false,
+    };
+    mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
     
     /* If rows are not equal, return with false status */
     if (first_vector->rows != second_vector->rows)
     {
-        return temp_vect_object;
+        return temp_vector_object;
     } else 
     {
-        temp_vect_object.status = true;
+    	temp_vector_object.status = true;
     }
     
-    for(size_t i=0; i<(first_vector->rows); ++i) {
-        temp_vect_object.vector[i] = 
-            first_vector->vector[i] + second_vector->vector[i];
+    for(size_t i=0; i<(first_vector->rows); ++i)
+    {
+    	temp_vector_object.vector[i] = first_vector->vector[i] + second_vector->vector[i];
     }
     
-    return temp_vect_object;
+    return temp_vector_object;
 }
 
 /*
@@ -134,12 +136,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -171,12 +173,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -210,12 +212,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -249,12 +251,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -290,12 +292,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -331,12 +333,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -374,12 +376,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -417,12 +419,12 @@ static inline VectorT vector_add(const VectorT *first_vector, const VectorT *sec
     static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+    			.arr_cap = NUMOFROWS,
+    			.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
         
         VectorT matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,

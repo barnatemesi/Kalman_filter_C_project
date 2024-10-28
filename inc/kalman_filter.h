@@ -9,7 +9,6 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "main.h"
 #include "helper_files.h"
 
 /* User defines */
@@ -70,9 +69,9 @@ typedef struct {
 /** \ingroup     KF_algo
     \brief       KF type definition */
 typedef struct {
-    VectorT control_signal_inp;             /*<< Comment */
-    VectorT y_meas_inp;
-    bool general_status;
+    VectorT control_signal_inp;             /*<< Control signal `u` */
+    VectorT y_meas_inp;						/*<< Measurement signal `y` */
+    bool general_status;					/*<< General status indicator */
 } Kalman_Filter_T;
 
 /* User function prototypes */

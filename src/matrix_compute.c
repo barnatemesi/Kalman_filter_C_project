@@ -3,12 +3,13 @@
 
 Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
 {
-	Matrix_T temp_matrix_object;
+	Matrix_T temp_matrix_object = {
+			.rows = NUMOFROWS,
+			.cols = NUMOFELE,
+			.status = false,
+	};
     uint8_t rows_used = first_mat->rows;
     uint8_t cols_used = first_mat->cols;
-    temp_matrix_object.rows = NUMOFROWS;
-    temp_matrix_object.cols = NUMOFELE;
-    temp_matrix_object.status = false;
     
     mw_init_array(temp_matrix_object.matrix, 0.0F, (rows_used + cols_used));
     
@@ -37,13 +38,13 @@ Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
 #if NUMOFROWS == 2
     VectorT matrix_mult(const Matrix_T *mat_inp, const VectorT *vec_inp)
     {
-        VectorT temp_vector_object;
-        
+        VectorT temp_vector_object = {
+        		.rows = NUMOFROWS,
+				.arr_cap = NUMOFROWS,
+				.status = false,
+        };
         mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
-        
+
         /* If matrix cols are not equal to vector rows, return with false status */
         if (mat_inp->cols != vec_inp->rows)
         {
@@ -70,12 +71,12 @@ Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
 #if NUMOFROWS == 3
     VectorT matrix_mult(const Matrix_T *mat_inp, const VectorT *vec_inp)
     {
-        VectorT temp_vector_object;
-        
-        mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
+    	VectorT temp_vector_object = {
+    	        		.rows = NUMOFROWS,
+    					.arr_cap = NUMOFROWS,
+    					.status = false,
+    	};
+    	mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         /* If matrix cols are not equal to vector rows, return with false status */
         if (mat_inp->cols != vec_inp->rows)
@@ -101,12 +102,12 @@ Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
     VectorT matrix_mult(const Matrix_T *mat_inp, const VectorT *vec_inp)
     {
         /* Init */
-        VectorT temp_vector_object;
-        
-        mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
+    	VectorT temp_vector_object = {
+    	        		.rows = NUMOFROWS,
+    					.arr_cap = NUMOFROWS,
+    					.status = false,
+    	};
+    	mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         /* If matrix cols are not equal to vector rows, return with false status */
         if (mat_inp->cols != vec_inp->rows)
@@ -132,12 +133,12 @@ Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
 #if NUMOFROWS == 5
     VectorT matrix_mult(const Matrix_T *mat_inp, const VectorT *vec_inp)
     {
-        VectorT temp_vector_object;
-        
-        mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
-        temp_vector_object.rows = NUMOFROWS;
-        temp_vector_object.arr_cap = NUMOFROWS;
-        temp_vector_object.status = false;
+    	VectorT temp_vector_object = {
+    	        		.rows = NUMOFROWS,
+    					.arr_cap = NUMOFROWS,
+    					.status = false,
+    	};
+    	mw_init_array(temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         /* If matrix cols are not equal to vector rows, return with false status */
         if (mat_inp->cols != vec_inp->rows)
@@ -163,12 +164,15 @@ Matrix_T matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
 
 MatrixT matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_inp2)
 {
-    MatrixT temp_matrix_object;
 	uint8_t cols_used = mat_inp1->cols;
 	uint8_t rows_used = mat_inp1->rows;
-    temp_matrix_object.rows = rows_used;
-    temp_matrix_object.cols = cols_used;
-    temp_matrix_object.status = false;
+
+    MatrixT temp_matrix_object = {
+    		.rows = rows_used,
+			.cols = cols_used,
+			.status = false,
+    };
+
     
     mw_init_array(&temp_matrix_object.matrix[0][0], 0.0F, (rows_used + cols_used));
     
@@ -190,10 +194,11 @@ MatrixT matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_inp
 Matrix_T matrix_mult_full(const Matrix_T *mat_inp1, const Matrix_T *mat_inp2)
 {
     (void)mat_inp2;
-    Matrix_T temp_matrix_object;
+    Matrix_T temp_matrix_object = {
+    		.status = false,
+    };
 	uint8_t cols_used = mat_inp1->cols;
 	uint8_t rows_used = mat_inp1->rows;
-    temp_matrix_object.status = false;
     
     mw_init_array(temp_matrix_object.matrix, 0.0F, (rows_used + cols_used));
     
