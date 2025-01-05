@@ -17,7 +17,7 @@ OBJS += \
 helper_files/%.o: ../helper_files/%.c helper_files/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -std=c11 -I"C:\Users\Barna\eclipse-workspace\C_Kalman_filter_dev\data" -I"C:\Users\Barna\eclipse-workspace\C_Kalman_filter_dev\helper_files" -I"C:\Users\Barna\eclipse-workspace\C_Kalman_filter_dev\inc" -I"C:\Users\Barna\eclipse-workspace\C_Kalman_filter_dev\src" -O2 -g -pedantic -Wall -Wextra -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	gcc -std=c11 -I"C:\Users\bteme\eclipse-workspace\C_Kalman_filter_dev\data" -I"C:\Users\bteme\eclipse-workspace\C_Kalman_filter_dev\kalman_filter" -I"C:\Users\bteme\eclipse-workspace\C_Kalman_filter_dev\helper_files" -I"C:\Users\bteme\eclipse-workspace\C_Kalman_filter_dev\inc" -I"C:\Users\bteme\eclipse-workspace\C_Kalman_filter_dev\src" -O2 -g -pedantic -Wall -Wextra -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
