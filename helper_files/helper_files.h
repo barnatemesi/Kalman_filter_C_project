@@ -1,9 +1,16 @@
 #ifndef HELPER_F_H__
 #define HELPER_F_H__
 
-#include "main.h"
 #include <stdint.h>
-#include <math.h>
+#include <string.h>
+#include <stdio.h>
+#include "kalman_filter.h"
+
+#ifdef CPU_IS_ARM
+	#include <arm_math.h>
+#else
+	#include <math.h>
+#endif
 
 /* Type definitions        */
 /** \ingroup     SpGtor

@@ -19,9 +19,6 @@ extern "C" {
 
 /* User defines */
 
-/* Due to compatibility reasons */
-typedef float float32_t;
-
 /* User function prototypes */
 
 /* C++ compatibility */

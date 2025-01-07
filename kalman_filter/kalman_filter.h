@@ -9,7 +9,13 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "helper_files.h"
+
+/* Due to compatibility reasons */
+#ifdef CPU_IS_ARM
+	#include <arm_math.h>
+#else
+	typedef float float32_t;
+#endif
 
 /* User defines */
 /* Default system matrices */

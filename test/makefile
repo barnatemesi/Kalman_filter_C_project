@@ -42,11 +42,11 @@ TARGET_BASE1=all_tests
 TARGET1 = $(TARGET_BASE1)$(TARGET_EXTENSION)
 SRC_FILES1=\
   ../kalman_filter/kalman_filter.c \
+  ../kalman_filter/matrix_compute.c \
   ../helper_files/helper_files.c \
   ../data/matrix_data.c \
-  ../src/matrix_compute.c \
   test.c
-INC_DIRS=-I../src -I../inc -I../helper_files -I../kalman_filter -I../data
+INC_DIRS=-I../helper_files -I../kalman_filter -I../data
 SYMBOLS=
 
 all: clean default
