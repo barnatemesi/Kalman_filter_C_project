@@ -12,9 +12,8 @@ jobs:
           persist-credentials: false
 
       - name: Compile tests
-        run: |
-        cd test/
-        make all
+        working-directory: ./test
+        run: make all
 
       - name: Execute tests
         run: ./all_tests.out
