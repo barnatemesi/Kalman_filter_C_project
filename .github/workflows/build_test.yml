@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04 # run on the latest image only
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compile tests
+        run: |
+        cd test/
+        make all
+
+      - name: Execute tests
+        run: ./all_tests.out
