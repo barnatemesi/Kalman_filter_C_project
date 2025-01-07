@@ -16,4 +16,5 @@ jobs:
         run: make all
 
       - name: Execute tests
+        working-directory: ./test
         run: ./all_tests.out
