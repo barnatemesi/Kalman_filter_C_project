@@ -17,11 +17,9 @@
 #define LEN_OF_DATA							(512U)
 
 /* Ini of variables for file handling */
-const char file_name[] =      "kalman_filter_validation_v2.csv";
-const char file_name1[] =     "data/kalman_filter_validation_v2.csv";
+const char file_name[] =      "kalman_filter_validation.csv";
 
 const char ref_file_name[]  = "data/SIM_KF_validation.csv";
-const char ref_file_name1[] = "ref_profile_08_09_2023_v00.csv";
 
 FILE *fpt = NULL;
 FILE *fpt_ref = NULL;
@@ -68,16 +66,16 @@ int main(void)
 #ifndef DEBUG_PRINT
     fpt = fopen(file_name, "w+");
     if (fpt==NULL)  {
-        printf("File not found, %s\n", file_name);
+        printf("File creation has failed!, %s\n", file_name);
         perror("1 - Error");
-        return errno;
+        return -1;
     }
     
     fpt_ref = fopen(ref_file_name, "r");
     if (fpt_ref==NULL)  {
-           printf("File not found, %s\n", ref_file_name);
-           perror("1 - Error");
-           return errno;
+    	printf("File not found, %s\n", ref_file_name);
+    	perror("1 - Error");
+    	return -1;
     }
 
     // Writing the first line in the .csv save-file
@@ -90,7 +88,8 @@ int main(void)
     // Init
     ret_check = init_kf_matrices();
     if (!ret_check){
-            printf("Unexpected error!\n");
+    	printf("Unexpected error!\n");
+    	return -1;
     }
     
     // Body of the algorithm
@@ -119,43 +118,11 @@ int main(void)
                                              (double)ret_of_kf.vector[3]); /**< T_load */
     #endif
 
-    /* Collect data in arrays */
-    signal_no0[i] = ret_of_kf.vector[0];
-    signal_no1[i] = ret_of_kf.vector[1];
-    signal_no2[i] = ret_of_kf.vector[2];
-    signal_no3[i] = ret_of_kf.vector[3];
-    }
-    
-    uint32_t row_ID = 0U;
-    size_t i_iter = 0U;
-    float32_t w_spindle_ref, T_motor_ref, T_rider_ref, T_load_ref = 0.0F;
-
-    /* Read reference data in from file */
-    while (fscanf(fpt_ref, "%u, %f, %f, %f, %f", &row_ID, &w_spindle_ref, &T_motor_ref,
-    											 &T_rider_ref, &T_load_ref) == 5)
-    {
-    	(void)row_ID;
-
-    	/* Collect data in arrays */
-    	ref_signal_no0[i_iter] = w_spindle_ref;
-    	ref_signal_no1[i_iter] = T_motor_ref;
-    	ref_signal_no2[i_iter] = T_rider_ref;
-    	ref_signal_no3[i_iter] = T_load_ref;
-
-    	++i_iter;
     }
 
     #ifdef DEBUG
         printf("***********************************************************\n");
     #endif
-
-    /* Comparison of reference with generated data */
-	mw_compare_vectors_f32(&kf_signals_vector.control_signal_inp.vector[0], &kf_signals_vector.control_signal_inp.vector[0], 4U) ? printf("Test vectors are the same!\n") : printf("Test vectors are not the same!\n");
-
-    mw_compare_vectors_f32(signal_no0, ref_signal_no0, TIMESTEPS) ? printf("Omega_spindle vectors are the same!\n") : printf("Omega_spindle vectors are not the same!\n");
-    mw_compare_vectors_f32(signal_no1, ref_signal_no1, TIMESTEPS) ? printf("T_motor vectors are the same!\n") : printf("T_motor vectors are not the same!\n");
-    mw_compare_vectors_f32(signal_no2, ref_signal_no2, TIMESTEPS) ? printf("T_rider vectors are the same!\n") : printf("T_rider vectors are not the same!\n");
-    mw_compare_vectors_f32(signal_no3, ref_signal_no3, TIMESTEPS) ? printf("T_estimated_load vectors are the same!\n") : printf("T_estimated_load vectors are not the same!\n");
     
     #ifndef DEBUG_PRINT
         fclose(fpt);

@@ -72,9 +72,11 @@ Thumbs.db
 *.o
 
 # Others
-*.csv
 *.cproject
 *.project
 *.out
 *.c.ctu-info
 *.c.dump
+
+# Test artifacts
+kalman_filter_validation.csv
