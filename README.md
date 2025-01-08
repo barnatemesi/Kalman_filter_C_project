@@ -14,7 +14,14 @@ If the order of your modelled system is larger than 10, unfortunately, this is i
 
 The project contains doxygen style commenting!
 
+Static analyzer of the project:
+
+Cppcheck - ver 2.16
+
+[cppcheck](https://cppcheck.sourceforge.io/)
+
 Versioning is based on: 
+
 [semantic versioning](https://semver.org/)
 
 # Install
@@ -22,7 +29,7 @@ Versioning is based on:
 
 - Your desired compiler. Based on your project, hardware etc.
 
-- make
+- make for testing
 
 - optionally: cmake (TBD)
 
