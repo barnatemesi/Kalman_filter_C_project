@@ -84,23 +84,26 @@ typedef struct {
 /**
  * \brief Properly initializes the needed vectors / matrices
  *
- * \details Works on global data
+ * \details Initializes the delayed state vector of x
+ *
+ * \param[in]	vector_x_ini: Desired array of values to be used in the first time step
+ * \param[in]	vector_x_k_1_inp: Destination of desired vector
  *
  * \return  Status
  */
-Ret_T init_kf_matrices(void);
+Ret_T init_kf_matrices(const float32_t vector_ini_inp[], VectorT *vector_x_k_1_inp);
 
 /**
  * \brief Steady-state Kalman-filter computation
  *
  * \details Streamlined computation using non-generic functions
  * 
- * \param[in]   control_signal_inp: Control signal as VectorT
- * \param[in]   y_meas_inp: Measurement signals as VectorT
+ * \param[in]   vectors_inp: control signal + measured output vector of y - data structure
+ * \param[in]   vector_x_k_1_inp: Delayed state vector, used for proper instancing
  *
  * \return  returns y_est (estimated / filtered signals) and status
  */
-VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp);
+VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp, VectorT *vector_x_k_1_inp);
 
 #ifdef __cplusplus
 }

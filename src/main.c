@@ -1,5 +1,6 @@
 #include "main.h"
 #include "kalman_filter.h"
+#include "matrix_data.h"
 #include "helper_files.h"
 
 #undef DEBUG
@@ -16,6 +17,8 @@
 
 #define LEN_OF_DATA							(512U)
 
+/* Declaration of global variables */
+
 /* Ini of variables for file handling */
 const char file_name[] =      "kalman_filter_validation.csv";
 
@@ -26,44 +29,35 @@ FILE *fpt_ref = NULL;
 
 char header[100]; // first row buffer
 
-/* Declaration of global variables */
-Kalman_Filter_T kf_signals_vector = {
-    .control_signal_inp = {
-        .vector = {5.0F, 0.0F, 0.0F, 0.0F}, // {5.0F, 0.0F, 0.0F, 0.0F}
-        .rows = NUMOFROWS_U,
-        .arr_cap = NUMOFROWS,
-    },
-    .y_meas_inp = {
-        .vector = {1.0F, 2.0F, 3.0F, 0.0F}, // {1.0F, 2.0F, 3.0F, 0.0F}
-        .rows = NUMOFROWS_SENSOR_MEAS,
-        .arr_cap = NUMOFROWS,
-    },
-    .general_status = true,
-};
-
-/* Global variables storing the test vectors */
-float32_t signal_no0[LEN_OF_DATA];
-float32_t signal_no1[LEN_OF_DATA];
-float32_t signal_no2[LEN_OF_DATA];
-float32_t signal_no3[LEN_OF_DATA];
-
-float32_t ref_signal_no0[LEN_OF_DATA];
-float32_t ref_signal_no1[LEN_OF_DATA];
-float32_t ref_signal_no2[LEN_OF_DATA];
-float32_t ref_signal_no3[LEN_OF_DATA];
-
-/* Declaration of input scalar and measurement vector */
-const float32_t u_vect[NUMOFROWS_U] = {5.0F};
-
-const float32_t y_meas_vect[NUMOFROWS_SENSOR_MEAS] = {1.0F, 2.0F, 3.0F};
-
 int main(void)
 {
     /* Init */
     Ret_T ret_check = NOTVALID;
 
+    // The system input is a step signal
+    Kalman_Filter_T kf_signals_vector = {
+        .control_signal_inp = {
+            .vector = {5.0F, 0.0F, 0.0F, 0.0F}, // {5.0F, 0.0F, 0.0F, 0.0F}
+            .rows = NUMOFROWS_U,
+            .arr_cap = NUMOFROWS,
+        },
+        .y_meas_inp = {
+            .vector = {1.0F, 2.0F, 3.0F, 0.0F}, // {1.0F, 2.0F, 3.0F, 0.0F}
+            .rows = NUMOFROWS_SENSOR_MEAS,
+            .arr_cap = NUMOFROWS,
+        },
+        .general_status = true,
+    };
+
+    /* Global variables */
+	static VectorT vector_x_k_1_state = {
+        .rows = NUMOFROWS,
+        .arr_cap = NUMOFROWS,
+	};
+	mw_init_array(vector_x_k_1_state.vector, 0U, NUMOFROWS);
 
 #ifndef DEBUG_PRINT
+    /* File handling */
     fpt = fopen(file_name, "w+");
     if (fpt==NULL)  {
         printf("File creation has failed!, %s\n", file_name);
@@ -86,7 +80,7 @@ int main(void)
 #endif
 
     // Init
-    ret_check = init_kf_matrices();
+    ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
     if (!ret_check){
     	printf("Unexpected error!\n");
     	return -1;
@@ -95,7 +89,7 @@ int main(void)
     // Body of the algorithm
     for (size_t i=0; i<TIMESTEPS; ++i)
     {
-    	VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector);
+    	VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector, &vector_x_k_1_state);
 
     	if (!ret_of_kf.status)
     	{

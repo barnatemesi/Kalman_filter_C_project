@@ -6,20 +6,14 @@
 // #define DEBUG_KF
 
 /* User static inline function prototypes */
-//
+// Adding up two vectors
 static inline VectorT vector_add(const VectorT *first_vector, const VectorT *second_vector);
-//
+// x[k+1] = A * x[k] + B * u[k]
 static inline VectorT first_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp);
-//
+// y[k] = C * x[k] + D * u[k]
 static inline VectorT second_line_of_state_space(const VectorT *state_vec_inp, const VectorT *u_signal_inp);
-//
+// Initialization and vector - to - vector copy
 static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], const uint32_t len_of_vec);
-
-/* Global variables */
-static VectorT vector_x_k_1_state = {
-    .rows = NUMOFROWS,
-    .arr_cap = NUMOFROWS,
-};
 
 static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t vector_inp[], const uint32_t len_of_vec)
 {
@@ -44,18 +38,18 @@ static inline Ret_T init_vect_2_vect_copy(VectorT *vect_result, const float32_t 
     return return_val;
 }
 
-Ret_T init_kf_matrices(void)
+Ret_T init_kf_matrices(const float32_t vector_ini_inp[], VectorT *vector_x_k_1_inp)
 {
     /* Delayed state vector 
      * aka - Initial condition 
      * */
-    (void)init_vect_2_vect_copy(&vector_x_k_1_state, x_k_1_ini, NUMOFROWS);
+    (void)init_vect_2_vect_copy(vector_x_k_1_inp, vector_ini_inp, NUMOFROWS);
     /* Handle error here */
     
     return (Ret_T)VALID;
 }
 
-VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
+VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp, VectorT *vector_x_k_1_inp)
 {
     /* INIT */
     VectorT y_est_vector_obj = {
@@ -66,13 +60,14 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
     mw_init_array(y_est_vector_obj.vector, 0U, NUMOFROWS);
     
     VectorT vector_u_used = {
-            .rows = NUMOFROWS_U + NUMOFROWS_SENSOR_MEAS,
             .arr_cap = NUMOFROWS,
+            .rows = NUMOFROWS_U + NUMOFROWS_SENSOR_MEAS,
+			.status = false,
     };
-    mw_init_array(vector_u_used.vector, 0.0F, NUMOFROWS); // this is not the best
+    mw_init_array(vector_u_used.vector, 0.0F, NUMOFROWS);
     
     /* Control signal input + sensor measured signals have to fit in vector_u_used */
-    if (vectors_inp->control_signal_inp.rows + vectors_inp->y_meas_inp.rows > NUMOFROWS)
+    if ((vectors_inp->control_signal_inp.rows + vectors_inp->y_meas_inp.rows) > NUMOFROWS)
     {
     	/* Return it with false status */
         return y_est_vector_obj;
@@ -83,6 +78,7 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
     {
         vector_u_used.vector[i] = vectors_inp->control_signal_inp.vector[i];
     }
+
     /* Appending y_meas_inp to the end of the u_used vector */
     for (size_t i=(vectors_inp->control_signal_inp.rows);
          i<(vectors_inp->control_signal_inp.rows + vectors_inp->y_meas_inp.rows); ++i)
@@ -91,13 +87,17 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp)
     }
     
     /* Body of the algorithm */
-    /* State vector */
-    VectorT vector_x_state = first_line_of_state_space(&vector_x_k_1_state, &vector_u_used);
+    /* x[k+1] = A * x[k] + B * u[k] */
+    VectorT vector_x_state = first_line_of_state_space(vector_x_k_1_inp, &vector_u_used);
     
-    y_est_vector_obj = second_line_of_state_space(&vector_x_k_1_state, &vector_u_used);
+    /* y[k] = C * x[k] + D * u[k] */
+    y_est_vector_obj = second_line_of_state_space(vector_x_k_1_inp, &vector_u_used);
     
     /* Delay the vector by one-step */
-    vector_x_k_1_state = vector_x_state;
+    for (size_t i=0; i<NUMOFROWS; ++i)
+    {
+    	vector_x_k_1_inp->vector[i] = vector_x_state.vector[i];
+    }
     
     return y_est_vector_obj;
 }
