@@ -3,7 +3,7 @@ This project is based on the following Matlab / project: Linear State Estimators
 
 [Linear state estimators](https://github.com/barnatemesi/PMSM_FOC_LTID_Linear)
 
-This project has the following goals:
+This project achieves the following goals:
 
 - Implement the already designed Kalman-filter in C. The implementation shall be as re-useable as possible.
 
@@ -12,7 +12,7 @@ This project has the following goals:
 The project is set up to accomodate systems of up to 5th order. Technically, the project is suitable for systems of up to ~12th order.
 If the order of your modelled system is larger than 10, unfortunately, this is implementation is not for you.
 
-PThe project contains doxygen style commenting!
+The project contains doxygen style commenting!
 
 Versioning is based on: 
 [semantic versioning](https://semver.org/)
