@@ -2,6 +2,10 @@
 #ifndef MATRIX_COMPUTE_H
 #define MATRIX_COMPUTE_H
 
+/* Docstring
+ * Namespace of: mw_
+ */
+
 #include "kalman_filter.h"
 #include "helper_files.h"
 
