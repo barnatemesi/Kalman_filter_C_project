@@ -2,6 +2,13 @@
 #ifndef KALMAN_FILTER_H
 #define KALMAN_FILTER_H
 
+/* Docstring
+ * Namespace is: kf_
+ *
+ * Created on: 15.06.2023
+ * Author: Barna Temesi
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -91,7 +98,7 @@ typedef struct {
  *
  * \return  Status
  */
-Ret_T init_kf_matrices(const float32_t vector_ini_inp[], VectorT *vector_x_k_1_inp);
+Ret_T init_kf_matrices(const float32_t kf_vector_ini_inp[], VectorT *kf_vector_x_k_1_inp);
 
 /**
  * \brief Steady-state Kalman-filter computation
@@ -103,7 +110,7 @@ Ret_T init_kf_matrices(const float32_t vector_ini_inp[], VectorT *vector_x_k_1_i
  *
  * \return  returns y_est (estimated / filtered signals) and status
  */
-VectorT kalman_filter_computation(const Kalman_Filter_T *vectors_inp, VectorT *vector_x_k_1_inp);
+VectorT kalman_filter_computation(const Kalman_Filter_T *kf_vectors_inp, VectorT *kf_vector_x_k_1_inp);
 
 #ifdef __cplusplus
 }

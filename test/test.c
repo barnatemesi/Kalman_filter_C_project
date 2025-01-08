@@ -29,6 +29,7 @@ int main(void)
     Ret_T ret_check = NOTVALID;
     uint32_t test_fail_counter = 0U;
 
+    /* One pair of `kf_signals_vector` and `vector_x_k_1_state` per one Kalman-filter instance */
     // The system input is a step signal
     Kalman_Filter_T kf_signals_vector = {
         .control_signal_inp = {
@@ -44,7 +45,7 @@ int main(void)
         .general_status = true,
     };
 
-    /* Global variables */
+    /* Delayed state vector */
     static VectorT vector_x_k_1_state = {
         .rows = NUMOFROWS,
         .arr_cap = NUMOFROWS,
@@ -70,6 +71,13 @@ int main(void)
     mw_init_array(ref_signal_no2, 0U, LEN_OF_DATA);
     mw_init_array(ref_signal_no3, 0U, LEN_OF_DATA);
 
+    // Init of kf matrices
+    ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
+    if (!ret_check){
+    	printf("Unexpected error!\n");
+    	return -1;
+    }
+
     /* File handling */
     fpt = fopen(file_name, "w+");
     if (fpt==NULL)  {
@@ -91,13 +99,6 @@ int main(void)
     /* Skipping the header */
     fscanf(fpt_ref, "%[^\n]\n", header);
 
-    // Init
-    ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
-    if (!ret_check){
-    	printf("Unexpected error!\n");
-    	return -1;
-    }
-    
     /* Body of the algorithm */
     uint32_t row_ID = 0U;
     size_t i_iter = 0U;
