@@ -51,3 +51,13 @@ If your project is based on an ARM microcontroller and CMSIS, define the followi
 Note: further optimization might be possible based on your hardware, specially if it's not based on an ARM microcontroller. Please do your due diligence in this regard!
 
 Optionally, re-use functions from `helper_files.h` and `matrix_compute.h` in your project.
+
+# Sources
+
+The main motivation of this project is study of efficient Kalman-filter algorithms. Inspired by:
+
+https://www.youtube.com/watch?v=WgTr79htuM4&t=633s&ab_channel=DepthBuffer
+
+Code and technical methodology are inspired by:
+
+https://ch.mathworks.com/help/control/ref/ss.html
