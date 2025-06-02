@@ -54,7 +54,7 @@ Optionally, re-use functions from `helper_files.h` and `matrix_compute.h` in you
 
 # Sources
 
-The main motivation of this project is study of efficient Kalman-filter algorithms. Inspired by:
+The main motivation of this project is to study efficient Kalman-filter algorithms. Inspired by:
 
 https://www.youtube.com/watch?v=WgTr79htuM4&t=633s&ab_channel=DepthBuffer
 
