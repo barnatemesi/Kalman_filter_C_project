@@ -37,10 +37,10 @@ Add to your Zephyr project such as:
 manifest:
   projects:
     - name: Kalman_filter_load_estimation_project
-	description: Kalman-filter implementation to estimate load torque state
-	revision: v1.2.0
-	path: modules/lib/kalman-filter-load-estimation # <your/desired/path>
-	url: https://github.com/barnatemesi/Kalman_filter_C_project.git
+    description: Kalman-filter implementation to estimate load torque state
+    revision: v1.2.0
+    path: modules/lib/kalman-filter-load-estimation # <your/desired/path>
+    url: https://github.com/barnatemesi/Kalman_filter_C_project.git
 ```
 
 
