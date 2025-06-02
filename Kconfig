@@ -1,0 +1,5 @@
+config APP_KALMAN_FILTER
+    bool "Enable Kalman filter component"
+	default n
+	help
+	  Enable Kalman filter component
