@@ -1,4 +1,4 @@
-# Kalman-filter project
+# Kalman-filter project description
 This project is based on the following Matlab / project: Linear State Estimators for Load Estimation in a PMSM system.
 
 [Linear state estimators](https://github.com/barnatemesi/PMSM_FOC_LTID_Linear)
@@ -24,33 +24,36 @@ Versioning is based on:
 
 [semantic versioning](https://semver.org/)
 
-# Install
-- GCC (latest) for testing
+# Dependencies
+- CMake - minimum v3.20.0
 
-- Your desired compiler. Based on your project, hardware etc.
+- MinGW (tested with 13.2.0) or your desired compiler
 
-- make for testing
-
-- optionally: cmake (TBD)
+- optionally: Doxygen (minimum v1.9.7)
 
 # Getting started
-Download the repo.
- 
-Copy the folder `kalman_filter` to your project. 
+Add to your Zephyr project such as:
+```yaml
+manifest:
+  projects:
+    - name: Kalman_filter_load_estimation_project
+	  description: Kalman-filter implementation to estimate load torque state
+	  revision: v1.2.0
+	  path: modules/lib/kalman-filter-load-estimation # <your/desired/path>
+	  url: https://github.com/barnatemesi/Kalman_filter_C_project.git
+```
 
-Copy the folder `data` to your project. 
 
-Set your system parameters in `kalman_filter.h`, where `NUMOFROWS` defines the order of the system.
+# Usage
+`#include <kalman_filter.h>`
 
-Replace the contents of `matrix_data.c` with the matrices calculated based on your project. Optionally, delete `SYSTEM_SWITCH`.
-
-Copy the contents of the folder `helper_files`, to your own project where you collect such files. Optionally, copy the header files to your `/inc` folder and merge `helper_files` with your version of such source / header file(s).
+The definition of the API is found here: `kalman_filter.h`. 
 
 If your project is based on an ARM microcontroller and CMSIS, define the following symbol: `-DCPU_IS_ARM`.
 
 Note: further optimization might be possible based on your hardware, specially if it's not based on an ARM microcontroller. Please do your due diligence in this regard!
 
-Optionally, re-use functions from `helper_files.h` and `matrix_compute.h` in your project.
+Optionally, re-use functions from `helper_files.h` in your project.
 
 # Sources
 
