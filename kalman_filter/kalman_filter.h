@@ -24,6 +24,8 @@ extern "C" {
 	typedef float float32_t;
 #endif
 
+#include "helper_files.h"
+
 /* User defines */
 /* Default system matrices */
 #if SYSTEM_SWITCH == 0 
