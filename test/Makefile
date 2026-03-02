@@ -57,5 +57,7 @@ default:
 clean:
 	$(CLEANUP) $(TARGET1)
 
+test: clean default
+
 ci: CFLAGS += -Werror
 ci: default
