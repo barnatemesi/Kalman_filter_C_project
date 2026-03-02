@@ -11,7 +11,7 @@ Matrix_T mw_matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
     uint8_t rows_used = first_mat->rows;
     uint8_t cols_used = first_mat->cols;
     
-    mw_init_array(mw_temp_matrix_object.matrix, 0.0F, (rows_used + cols_used));
+    mw_init_array(mw_temp_matrix_object.matrix, 0.0F, (rows_used * cols_used));
     
     /* If rows are not equal, return with false status */
     if (first_mat->rows != second_mat->rows)
@@ -25,7 +25,7 @@ Matrix_T mw_matrix_add(const Matrix_T *first_mat, const Matrix_T *second_mat)
         return mw_temp_matrix_object;
     }
     
-    for(size_t i=0; i<(rows_used + cols_used); ++i) {
+    for(size_t i=0; i<(rows_used * cols_used); ++i) {
         mw_temp_matrix_object.matrix[i] =
             first_mat->matrix[i] + second_mat->matrix[i];
     }
@@ -174,7 +174,7 @@ MatrixT mw_matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_
     };
 
     
-    mw_init_array(&mw_temp_matrix_object.matrix[0][0], 0.0F, (rows_used + cols_used));
+    mw_init_array(&mw_temp_matrix_object.matrix[0][0], 0.0F, (rows_used * cols_used));
     
     size_t i, j, k = 0;
     for (i = 0; i < rows_used; ++i) {

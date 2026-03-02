@@ -80,3 +80,4 @@ Thumbs.db
 
 # Test artifacts
 kalman_filter_validation.csv
+/.github/*.md

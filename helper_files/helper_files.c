@@ -13,7 +13,7 @@ void mw_init_matrix_by_rows(float32_t *matrix_inp, float32_t *each_row_inp, uint
     /* Copies row-by-row */
 	for (size_t i=0; i<rows; ++i)
         {
-            memcpy((matrix_inp+i), each_row_inp, sizeof(float32_t) * cols);
+            memcpy((matrix_inp + i * cols), each_row_inp, sizeof(float32_t) * cols);
         }
 }
 

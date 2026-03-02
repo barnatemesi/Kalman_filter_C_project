@@ -28,13 +28,13 @@ static inline Ret_T kf_init_vect_2_vect_copy(VectorT *kf_vect_result, const floa
     {
         kf_vect_result->status = true;
         kf_init_return_val = VALID;
+
+        for (size_t i=0; i<kf_len_of_vec; ++i)
+        {
+            kf_vect_result->vector[i] = kf_vector_inp[i];
+        }
+        kf_vect_result->rows = kf_len_of_vec;
     }
-    
-    for (size_t i=0; i<kf_len_of_vec; ++i)
-    {
-        kf_vect_result->vector[i] = kf_vector_inp[i];
-    }
-    kf_vect_result->rows = kf_len_of_vec;
     
     return kf_init_return_val;
 }
@@ -44,10 +44,9 @@ Ret_T init_kf_matrices(const float32_t kf_vector_ini_inp[], VectorT *kf_vector_x
     /* Delayed state vector 
      * aka - Initial condition 
      * */
-    (void)kf_init_vect_2_vect_copy(kf_vector_x_k_1_inp, kf_vector_ini_inp, NUMOFROWS);
-    /* Handle error here */
+    Ret_T kf_ret = kf_init_vect_2_vect_copy(kf_vector_x_k_1_inp, kf_vector_ini_inp, NUMOFROWS);
     
-    return (Ret_T)VALID;
+    return kf_ret;
 }
 
 VectorT kalman_filter_computation(const Kalman_Filter_T *kf_vectors_inp, VectorT *kf_vector_x_k_1_inp)
@@ -159,7 +158,17 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
                 ( d_matrix_A_DU.matrix[0] * kf_state_vec_inp->vector[0] ) +
                 ( d_matrix_A_DU.matrix[2] * kf_state_vec_inp->vector[1] )
         ;
-        
+
+        kf_matrix_mult_temp1.vector[1] =
+                ( d_matrix_A_DU.matrix[1] * kf_state_vec_inp->vector[0] ) +
+                ( d_matrix_A_DU.matrix[3] * kf_state_vec_inp->vector[1] )
+        ;
+
+        kf_matrix_mult_temp2.vector[0] =
+                ( d_matrix_B_plus_K_DU.matrix[0] * kf_u_signal_inp->vector[0] ) +
+                ( d_matrix_B_plus_K_DU.matrix[2] * kf_u_signal_inp->vector[1] )
+        ;
+
         kf_matrix_mult_temp2.vector[1] =
                 ( d_matrix_B_plus_K_DU.matrix[1] * kf_u_signal_inp->vector[0] ) +
                 ( d_matrix_B_plus_K_DU.matrix[3] * kf_u_signal_inp->vector[1] )
@@ -196,7 +205,17 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
                 ( d_matrix_C_DU.matrix[0] * kf_state_vec_inp->vector[0] ) +
                 ( d_matrix_C_DU.matrix[2] * kf_state_vec_inp->vector[1] )
         ;
-        
+
+        kf_matrix_mult_temp1.vector[1] =
+                ( d_matrix_C_DU.matrix[1] * kf_state_vec_inp->vector[0] ) +
+                ( d_matrix_C_DU.matrix[3] * kf_state_vec_inp->vector[1] )
+        ;
+
+        kf_matrix_mult_temp2.vector[0] =
+                ( d_matrix_D_DU.matrix[0] * kf_u_signal_inp->vector[0] ) +
+                ( d_matrix_D_DU.matrix[2] * kf_u_signal_inp->vector[1] )
+        ;
+
         kf_matrix_mult_temp2.vector[1] =
                 ( d_matrix_D_DU.matrix[1] * kf_u_signal_inp->vector[0] ) +
                 ( d_matrix_D_DU.matrix[3] * kf_u_signal_inp->vector[1] )

@@ -98,7 +98,7 @@
 
 /* **************** MOC example / Thesis / Open-source **************** */
 #if SYSTEM_SWITCH == 2
-    const Matrix_T d_matrix_A_OPEN = {
+    const Matrix_T d_matrix_A_DU = {
                          .status = false,
                          .rows = NUMOFROWS,
                          .cols = NUMOFELE,
@@ -106,7 +106,7 @@
                                     0.01976703F,  0.99986461F},
     };
 
-    const Matrix_T d_matrix_B_plus_K_OPEN = {
+    const Matrix_T d_matrix_B_plus_K_DU = {
                          .status = false,
                          .rows = NUMOFROWS,
                          .cols = NUMOFCOLS_B_PLUS_KF,
@@ -114,7 +114,7 @@
                                     0.00013539F, -0.01976726F},
     };
 
-    const Matrix_T d_matrix_C_OPEN = {
+    const Matrix_T d_matrix_C_DU = {
                          .status = false,
                          .rows = NUMOFROWS,
                          .cols = NUMOFELE,
@@ -122,7 +122,7 @@
                                     0.00988351F,  0.99993230F},
     };
 
-    const Matrix_T d_matrix_D_OPEN = {
+    const Matrix_T d_matrix_D_DU = {
                          .status = false,
                          .rows = NUMOFROWS,
                          .cols = NUMOFELE,

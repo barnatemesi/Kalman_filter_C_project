@@ -24,6 +24,7 @@ extern "C" {
 	typedef float float32_t;
 #endif
 
+#include "kf_config.h"
 #include "helper_files.h"
 
 /* User defines */
@@ -53,7 +54,14 @@ extern "C" {
 
 /* General 2 state system */
 #if SYSTEM_SWITCH == 2
-
+    #define NUMOFELE		        	    (2U)    /**< A matrix, number of columns */
+    #define NUMOFCOLS_B                     (1U)    /**< B matrix, number of columns */
+    #define NUMOFCOLS_B_PLUS_KF             (2U)    /**< [ B matrix KF gain ] */
+    #define NUMOFROWS_U                     (1U)    /**< Number of control signals, U */
+    #define NUMOFROWS		    	        (2U)    /**< Number of states */
+    #define LEN_OF_MATRIX                   (NUMOFELE * NUMOFROWS)
+    #define NUMOFROWS_SENSOR_MEAS	   	    (1U)    /**< Number of signals measured by sensors */
+    #define INI_VAL			    	        ((float32_t)0.0F)  /**< General INIT value */
 #endif
 
 /** \ingroup     KF_algo
