@@ -180,8 +180,8 @@ MatrixT mw_matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_
     uint8_t out_cols = mat_inp2->cols;
     size_t i, j, k = 0;
     for (i = 0; i < rows_used; ++i) {
-        for (j = 0; j < out_cols; ++j) {
-            for (k = 0; k < inner_dim; ++k) {
+        for (k = 0; k < inner_dim; ++k) {
+            for (j = 0; j < out_cols; ++j) {
                 mw_temp_matrix_object.matrix[i][j]
                             += mat_inp1->matrix[i][k] * mat_inp2->matrix[k][j];
             }

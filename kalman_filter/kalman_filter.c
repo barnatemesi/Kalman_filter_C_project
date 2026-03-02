@@ -4,18 +4,18 @@
 #undef  DEBUG_KF
 // #define DEBUG_KF
 
-/* User static inline function prototypes */
+/* User static function prototypes */
 // Adding up two vectors
-static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const VectorT *kf_second_vector);
+static VectorT kf_vector_add(const VectorT *kf_first_vector, const VectorT *kf_second_vector);
 // x[k+1] = A * x[k] + B * u[k]
-static inline VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp);
+static VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp);
 // y[k] = C * x[k] + D * u[k]
-static inline VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp);
+static VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp);
 // Initialization and vector - to - vector copy
-static inline Ret_T kf_init_vect_2_vect_copy(VectorT *kf_vect_result, const float32_t kf_vector_inp[],
+static Ret_T kf_init_vect_2_vect_copy(VectorT *kf_vect_result, const float32_t kf_vector_inp[],
 												const uint32_t kf_len_of_vec);
 
-static inline Ret_T kf_init_vect_2_vect_copy(VectorT *kf_vect_result, const float32_t kf_vector_inp[],
+static Ret_T kf_init_vect_2_vect_copy(VectorT *kf_vect_result, const float32_t kf_vector_inp[],
 												const uint32_t kf_len_of_vec)
 {
     Ret_T kf_init_return_val = NOTVALID;
@@ -57,7 +57,7 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *kf_vectors_inp, VectorT
 			.rows = NUMOFROWS,
 			.status = false,
     };
-    mw_init_array(kf_y_est_vector_obj.vector, 0U, NUMOFROWS);
+    mw_init_array(kf_y_est_vector_obj.vector, 0.0F, NUMOFROWS);
     
     VectorT kf_vector_u_used = {
             .arr_cap = NUMOFROWS,
@@ -102,7 +102,7 @@ VectorT kalman_filter_computation(const Kalman_Filter_T *kf_vectors_inp, VectorT
     return kf_y_est_vector_obj;
 }
 
-static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const VectorT *kf_second_vector)
+static VectorT kf_vector_add(const VectorT *kf_first_vector, const VectorT *kf_second_vector)
 {
     VectorT kf_temp_vector_object = {
     		.rows = NUMOFROWS,
@@ -134,7 +134,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
  * are conditionally compiled based on the order (rank) of the system
  */
 #if NUMOFROWS == 2
-    static inline VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -142,7 +142,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -181,7 +180,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
         return kf_temp_vector_object;
     }
 
-    static inline VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -189,7 +188,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -230,7 +228,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
 #endif
 
 #if NUMOFROWS == 3
-    static inline VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -238,7 +236,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -269,7 +266,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
         return kf_temp_vector_object;
     }
 
-    static inline VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -277,7 +274,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -310,7 +306,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
 #endif
 
 #if NUMOFROWS == 4
-    static inline VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -318,7 +314,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -351,7 +346,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
         return kf_temp_vector_object;
     }
 
-    static inline VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -359,7 +354,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -394,7 +388,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
 #endif
 
 #if NUMOFROWS == 5
-    static inline VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_first_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -402,7 +396,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,
@@ -437,7 +430,7 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
         return kf_temp_vector_object;
     }
 
-    static inline VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
+    static VectorT kf_second_line_of_state_space(const VectorT *kf_state_vec_inp, const VectorT *kf_u_signal_inp)
     {
         /* Init */
         VectorT kf_temp_vector_object = {
@@ -445,7 +438,6 @@ static inline VectorT kf_vector_add(const VectorT *kf_first_vector, const Vector
     			.arr_cap = NUMOFROWS,
     			.status = false,
         };
-        mw_init_array(kf_temp_vector_object.vector, 0.0F, NUMOFROWS);
         
         VectorT kf_matrix_mult_temp1 = {
                         .arr_cap = NUMOFROWS,

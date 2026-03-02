@@ -50,26 +50,26 @@ int main(void)
         .rows = NUMOFROWS,
         .arr_cap = NUMOFROWS,
     };
-    mw_init_array(vector_x_k_1_state.vector, 0U, NUMOFROWS);
+    mw_init_array(vector_x_k_1_state.vector, 0.0F, NUMOFROWS);
 
     /* Vectors to store the results and variables */
     float32_t signal_no0[LEN_OF_DATA];
     float32_t signal_no1[LEN_OF_DATA];
     float32_t signal_no2[LEN_OF_DATA];
     float32_t signal_no3[LEN_OF_DATA];
-    mw_init_array(signal_no0, 0U, LEN_OF_DATA);
-    mw_init_array(signal_no1, 0U, LEN_OF_DATA);
-    mw_init_array(signal_no2, 0U, LEN_OF_DATA);
-    mw_init_array(signal_no3, 0U, LEN_OF_DATA);
+    mw_init_array(signal_no0, 0.0F, LEN_OF_DATA);
+    mw_init_array(signal_no1, 0.0F, LEN_OF_DATA);
+    mw_init_array(signal_no2, 0.0F, LEN_OF_DATA);
+    mw_init_array(signal_no3, 0.0F, LEN_OF_DATA);
 
     float32_t ref_signal_no0[LEN_OF_DATA];
     float32_t ref_signal_no1[LEN_OF_DATA];
     float32_t ref_signal_no2[LEN_OF_DATA];
     float32_t ref_signal_no3[LEN_OF_DATA];
-    mw_init_array(ref_signal_no0, 0U, LEN_OF_DATA);
-    mw_init_array(ref_signal_no1, 0U, LEN_OF_DATA);
-    mw_init_array(ref_signal_no2, 0U, LEN_OF_DATA);
-    mw_init_array(ref_signal_no3, 0U, LEN_OF_DATA);
+    mw_init_array(ref_signal_no0, 0.0F, LEN_OF_DATA);
+    mw_init_array(ref_signal_no1, 0.0F, LEN_OF_DATA);
+    mw_init_array(ref_signal_no2, 0.0F, LEN_OF_DATA);
+    mw_init_array(ref_signal_no3, 0.0F, LEN_OF_DATA);
 
     // Init of kf matrices
     ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);

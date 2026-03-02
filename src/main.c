@@ -54,7 +54,7 @@ int main(void)
         .rows = NUMOFROWS,
         .arr_cap = NUMOFROWS,
 	};
-	mw_init_array(vector_x_k_1_state.vector, 0U, NUMOFROWS);
+	mw_init_array(vector_x_k_1_state.vector, 0.0F, NUMOFROWS);
 
 #ifndef DEBUG_PRINT
     /* File handling */
