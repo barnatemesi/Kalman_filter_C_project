@@ -28,7 +28,4 @@ VectorT mw_matrix_mult(const Matrix_T *mat_inp, const VectorT *vec_inp);
 /* For matrix * matrix */
 //
 MatrixT mw_matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_inp2);
-// 
-Matrix_T mw_matrix_mult_full(const Matrix_T *mat_inp1, const Matrix_T *mat_inp2);
-
 #endif /* MATRIX_COMPUTE_H */

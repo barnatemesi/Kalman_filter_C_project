@@ -97,15 +97,16 @@ int main(void)
     fprintf(fpt, "Idx, omega_spindle, T_mot, T_rider, T_load \n");
 
     /* Skipping the header */
-    fscanf(fpt_ref, "%[^\n]\n", header);
+    fscanf(fpt_ref, "%99[^\n]\n", header);
 
     /* Body of the algorithm */
     uint32_t row_ID = 0U;
     size_t i_iter = 0U;
-    float32_t w_spindle_ref, T_motor_ref, T_rider_ref, T_load_ref = 0.0F;
+    float32_t w_spindle_ref = 0.0F, T_motor_ref = 0.0F, T_rider_ref = 0.0F, T_load_ref = 0.0F;
 
     /* Read reference data in from file */
-    while (fscanf(fpt_ref, "%u, %f, %f, %f, %f", &row_ID, &w_spindle_ref, &T_motor_ref,
+    while ((i_iter < LEN_OF_DATA) &&
+           fscanf(fpt_ref, "%u, %f, %f, %f, %f", &row_ID, &w_spindle_ref, &T_motor_ref,
     											 &T_rider_ref, &T_load_ref) == (NUMOFROWS + 1))
     {
     	(void)row_ID;

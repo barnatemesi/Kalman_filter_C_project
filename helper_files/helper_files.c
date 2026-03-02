@@ -21,7 +21,7 @@ void mw_print_array(const float32_t * arr_inp, const uint32_t len)
 {
 	for(size_t i=0; i<len; ++i)
 	{
-		printf("Array value [%d] is: %f\n", (uint32_t)i, *(arr_inp+i));
+		printf("Array value [%u] is: %f\n", (uint32_t)i, *(arr_inp+i));
 	}
     printf("\n");
 }
@@ -125,7 +125,7 @@ void mw_drl_init(RC_Dynamic_RateLimT *drl_params_in)
 {
 	drl_params_in->signal_out_k = 0.0F;
 	drl_params_in->drl_upper_limit = 1000.0F;
-	drl_params_in->drl_lower_limit = 1000.0F;
+	drl_params_in->drl_lower_limit = -1000.0F;
 	drl_params_in->status_active = false;
 }
 

@@ -51,6 +51,8 @@ SYMBOLS=
 
 all: clean default
 
+.PHONY: all default clean test ci
+
 default:
 	$(C_COMPILER) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES1) -o $(TARGET1)
 

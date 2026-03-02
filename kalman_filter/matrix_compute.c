@@ -176,10 +176,12 @@ MatrixT mw_matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_
     
     mw_init_array(&mw_temp_matrix_object.matrix[0][0], 0.0F, (rows_used * cols_used));
     
+    uint8_t inner_dim = mat_inp1->cols;
+    uint8_t out_cols = mat_inp2->cols;
     size_t i, j, k = 0;
     for (i = 0; i < rows_used; ++i) {
-        for (j = 0; j < rows_used; ++j) {
-            for (k = 0; k < rows_used; ++k) {
+        for (j = 0; j < out_cols; ++j) {
+            for (k = 0; k < inner_dim; ++k) {
                 mw_temp_matrix_object.matrix[i][j]
                             += mat_inp1->matrix[i][k] * mat_inp2->matrix[k][j];
             }
@@ -191,19 +193,4 @@ MatrixT mw_matrix_mult_full_classic(const MatrixT *mat_inp1, const MatrixT *mat_
 	return mw_temp_matrix_object;
 }
 
-Matrix_T mw_matrix_mult_full(const Matrix_T *mat_inp1, const Matrix_T *mat_inp2)
-{
-    (void)mat_inp2;
-    Matrix_T mw_temp_matrix_object = {
-    		.status = false,
-    };
-	uint8_t cols_used = mat_inp1->cols;
-	uint8_t rows_used = mat_inp1->rows;
-    
-    mw_init_array(mw_temp_matrix_object.matrix, 0.0F, (rows_used + cols_used));
-    
-    (void)cols_used;
-    (void)rows_used;
 
-	return mw_temp_matrix_object;
-}

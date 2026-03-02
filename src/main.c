@@ -76,7 +76,7 @@ int main(void)
     fprintf(fpt, "Idx, omega_spindle, T_mot, T_rider, T_load \n");
 
     /* Skipping the header */
-    fscanf(fpt_ref, "%[^\n]\n", header);
+    fscanf(fpt_ref, "%99[^\n]\n", header);
 #endif
 
     // Init
