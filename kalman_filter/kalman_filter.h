@@ -10,7 +10,8 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <stdlib.h>
@@ -19,9 +20,9 @@ extern "C" {
 
 /* Due to compatibility reasons */
 #ifdef CPU_IS_ARM
-	#include <arm_math.h>
+#include <arm_math.h>
 #else
-	typedef float float32_t;
+typedef float float32_t;
 #endif
 
 #include "kf_config.h"
@@ -29,72 +30,76 @@ extern "C" {
 
 /* User defines */
 /* Default system matrices */
-#if SYSTEM_SWITCH == 0 
-    #define NUMOFELE		        	    (4U)    /**< A matrix, number of columns */
-    #define NUMOFCOLS_B                     (1U)    /**< B matrix, number of columns */
-    #define NUMOFCOLS_B_PLUS_KF             (4U)    /**< [ B matrix KF gain ] */
-    #define NUMOFROWS_U                     (1U)    /**< Number of control signals, U */
-    #define NUMOFROWS		    	        (4U)    /**< Number of states */
-    #define LEN_OF_MATRIX                   (NUMOFELE * NUMOFROWS)
-    #define NUMOFROWS_SENSOR_MEAS	   	    (3U)    /**< Number of signals measured by sensors */
-    #define INI_VAL			    	        ((float32_t)0.0F)  /**< General INIT value */
-#endif 
+#if SYSTEM_SWITCH == 0
+#define NUMOFELE (4U)            /**< A matrix, number of columns */
+#define NUMOFCOLS_B (1U)         /**< B matrix, number of columns */
+#define NUMOFCOLS_B_PLUS_KF (4U) /**< [ B matrix KF gain ] */
+#define NUMOFROWS_U (1U)         /**< Number of control signals, U */
+#define NUMOFROWS (4U)           /**< Number of states */
+#define LEN_OF_MATRIX (NUMOFELE * NUMOFROWS)
+#define NUMOFROWS_SENSOR_MEAS (3U) /**< Number of signals measured by sensors */
+#define INI_VAL ((float32_t)0.0F)  /**< General INIT value */
+#endif
 
 /* Transposed system matrices */
-#if SYSTEM_SWITCH == 1 
-    #define NUMOFELE		        	    (4U)    /**< A matrix, number of columns */
-    #define NUMOFCOLS_B                     (1U)    /**< B matrix, number of columns */
-    #define NUMOFCOLS_B_PLUS_KF             (4U)    /**< [ B matrix KF gain ] */
-    #define NUMOFROWS_U                     (1U)    /**< Number of control signals, U */
-    #define NUMOFROWS		    	        (4U)    /**< Number of states */
-    #define LEN_OF_MATRIX                   (NUMOFELE * NUMOFROWS)
-    #define NUMOFROWS_SENSOR_MEAS	   	    (3U)    /**< Number of signals measured by sensors */
-    #define INI_VAL			    	        ((float32_t)0.0F)  /**< General INIT value */
-#endif 
+#if SYSTEM_SWITCH == 1
+#define NUMOFELE (4U)            /**< A matrix, number of columns */
+#define NUMOFCOLS_B (1U)         /**< B matrix, number of columns */
+#define NUMOFCOLS_B_PLUS_KF (4U) /**< [ B matrix KF gain ] */
+#define NUMOFROWS_U (1U)         /**< Number of control signals, U */
+#define NUMOFROWS (4U)           /**< Number of states */
+#define LEN_OF_MATRIX (NUMOFELE * NUMOFROWS)
+#define NUMOFROWS_SENSOR_MEAS (3U) /**< Number of signals measured by sensors */
+#define INI_VAL ((float32_t)0.0F)  /**< General INIT value */
+#endif
 
 /* General 2 state system */
 #if SYSTEM_SWITCH == 2
-    #define NUMOFELE		        	    (2U)    /**< A matrix, number of columns */
-    #define NUMOFCOLS_B                     (1U)    /**< B matrix, number of columns */
-    #define NUMOFCOLS_B_PLUS_KF             (2U)    /**< [ B matrix KF gain ] */
-    #define NUMOFROWS_U                     (1U)    /**< Number of control signals, U */
-    #define NUMOFROWS		    	        (2U)    /**< Number of states */
-    #define LEN_OF_MATRIX                   (NUMOFELE * NUMOFROWS)
-    #define NUMOFROWS_SENSOR_MEAS	   	    (1U)    /**< Number of signals measured by sensors */
-    #define INI_VAL			    	        ((float32_t)0.0F)  /**< General INIT value */
+#define NUMOFELE (2U)            /**< A matrix, number of columns */
+#define NUMOFCOLS_B (1U)         /**< B matrix, number of columns */
+#define NUMOFCOLS_B_PLUS_KF (2U) /**< [ B matrix KF gain ] */
+#define NUMOFROWS_U (1U)         /**< Number of control signals, U */
+#define NUMOFROWS (2U)           /**< Number of states */
+#define LEN_OF_MATRIX (NUMOFELE * NUMOFROWS)
+#define NUMOFROWS_SENSOR_MEAS (1U) /**< Number of signals measured by sensors */
+#define INI_VAL ((float32_t)0.0F)  /**< General INIT value */
 #endif
 
 /** \ingroup     KF_algo
     \brief       General return enum */
-typedef enum {
-    NOTVALID,
-    VALID
+typedef enum
+{
+	NOTVALID,
+	VALID
 } Ret_T;
 
 /** \ingroup     KF_algo
     \brief       Vector type definitions */
-typedef struct {
-    float32_t vector[NUMOFROWS];
+typedef struct
+{
+	float32_t vector[NUMOFROWS];
 	uint8_t rows;
-    uint8_t arr_cap;
-    bool status;
+	uint8_t arr_cap;
+	bool status;
 } VectorT;
 
 /** \ingroup     KF_algo
     \brief       Matrix type definitions */
-typedef struct {
-    float32_t matrix[LEN_OF_MATRIX];
+typedef struct
+{
+	float32_t matrix[LEN_OF_MATRIX];
 	uint8_t rows;
 	uint8_t cols;
-    bool status;
+	bool status;
 } Matrix_T;
 
 /** \ingroup     KF_algo
     \brief       KF type definition */
-typedef struct {
-    VectorT control_signal_inp;             /*<< Control signal `u` */
-    VectorT y_meas_inp;						/*<< Measurement signal `y` */
-    bool general_status;					/*<< General status indicator */
+typedef struct
+{
+	VectorT control_signal_inp; /*<< Control signal `u` */
+	VectorT y_meas_inp;         /*<< Measurement signal `y` */
+	bool general_status;        /*<< General status indicator */
 } Kalman_Filter_T;
 
 /* User function prototypes */

@@ -7,9 +7,9 @@
 #include "kalman_filter.h"
 
 #ifdef CPU_IS_ARM
-	#include <arm_math.h>
+#include <arm_math.h>
 #else
-	#include <math.h>
+#include <math.h>
 #endif
 
 /* Type definitions        */
@@ -18,10 +18,10 @@
  * 				 source: Filtering_component */
 typedef struct
 {
-	float32_t signal_out_k;							/**< Output signal */
-	float32_t drl_upper_limit;						/**< DRL upper limit value */
-	float32_t drl_lower_limit;						/**< DRL lower limit value */
-	bool status_active;								/**< Active status */
+	float32_t signal_out_k;    /**< Output signal */
+	float32_t drl_upper_limit; /**< DRL upper limit value */
+	float32_t drl_lower_limit; /**< DRL lower limit value */
+	bool status_active;        /**< Active status */
 } RC_Dynamic_RateLimT;
 
 /* User defined prototypes */
@@ -110,7 +110,9 @@ void mw_drl_init(RC_Dynamic_RateLimT *drl_params_in);
  *
  * \return Return void
 */
-void mw_drl_params_update(const float32_t new_upper_limit, const float32_t new_lower_limit, RC_Dynamic_RateLimT *drl_params_in);
+void mw_drl_params_update(const float32_t new_upper_limit,
+                          const float32_t new_lower_limit,
+                          RC_Dynamic_RateLimT *drl_params_in);
 
 /**
  * \brief Dynamic rate limiter
@@ -129,7 +131,10 @@ void mw_dynamic_rate_limiter(const float32_t inp_val, RC_Dynamic_RateLimT *drl_p
  *
  * \return Return of value of float32_t
 */
-float32_t mw_linear_algo(const float32_t inp_val, const float32_t start_val, const float32_t stop_val, const float32_t remaining_val);
+float32_t mw_linear_algo(const float32_t inp_val,
+                         const float32_t start_val,
+                         const float32_t stop_val,
+                         const float32_t remaining_val);
 
 /**
  * \brief Getter for filtered rider torque
@@ -138,9 +143,12 @@ float32_t mw_linear_algo(const float32_t inp_val, const float32_t start_val, con
  *
  * \return Return value of float32_t
 */
-float32_t mw_linear_scheduling(const float32_t scheduling_val, const float32_t A_param, const float32_t B_param,
-								const float32_t high_val, const float32_t low_val);
-                                
+float32_t mw_linear_scheduling(const float32_t scheduling_val,
+                               const float32_t A_param,
+                               const float32_t B_param,
+                               const float32_t high_val,
+                               const float32_t low_val);
+
 /**
  * \brief Getter for filtered rider torque
  *
@@ -148,6 +156,6 @@ float32_t mw_linear_scheduling(const float32_t scheduling_val, const float32_t A
  *
  * \return Return value of float32_t
 */
-bool mw_compare_vectors_f32(const float32_t *first_vec_inp, const float32_t *second_vec_inp, uint32_t vec_len);                  
+bool mw_compare_vectors_f32(const float32_t *first_vec_inp, const float32_t *second_vec_inp, uint32_t vec_len);
 
 #endif /* HELPER_F_H__ */

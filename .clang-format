@@ -1,0 +1,70 @@
+---
+Language: Cpp
+
+# --- Indentation ---
+UseTab: ForIndentation
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 8
+IndentCaseLabels: false
+IndentGotoLabels: false
+IndentPPDirectives: None
+IndentExternBlock: NoIndent
+NamespaceIndentation: None
+
+# --- Braces ---
+BreakBeforeBraces: Allman
+
+# --- Line width ---
+ColumnLimit: 120
+
+# --- Pointer / reference alignment ---
+PointerAlignment: Right
+ReferenceAlignment: Right
+
+# --- Single-line allowances ---
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+
+# --- Alignment ---
+AlignAfterOpenBracket: Align
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+AlignConsecutiveMacros: None
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignEscapedNewlines: Left
+AlignOperands: Align
+
+# --- Spaces ---
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# --- Includes ---
+SortIncludes: Never
+IncludeBlocks: Preserve
+
+# --- Breaking ---
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BinPackArguments: false
+BinPackParameters: false
+
+# --- Other ---
+InsertBraces: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 2
+ReflowComments: false
+...

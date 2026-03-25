@@ -4,7 +4,8 @@
 
 /* C++ compatibility */
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* User includes */
