@@ -18,10 +18,10 @@
  * 				 source: Filtering_component */
 typedef struct
 {
-	float32_t signal_out_k;    /**< Output signal */
-	float32_t drl_upper_limit; /**< DRL upper limit value */
-	float32_t drl_lower_limit; /**< DRL lower limit value */
-	bool status_active;        /**< Active status */
+    float32_t signal_out_k;    /**< Output signal */
+    float32_t drl_upper_limit; /**< DRL upper limit value */
+    float32_t drl_lower_limit; /**< DRL lower limit value */
+    bool status_active;        /**< Active status */
 } RC_Dynamic_RateLimT;
 
 /* User defined prototypes */

@@ -69,37 +69,37 @@ typedef float float32_t;
     \brief       General return enum */
 typedef enum
 {
-	NOTVALID,
-	VALID
+    NOTVALID,
+    VALID
 } Ret_T;
 
 /** \ingroup     KF_algo
     \brief       Vector type definitions */
 typedef struct
 {
-	float32_t vector[NUMOFROWS];
-	uint8_t rows;
-	uint8_t arr_cap;
-	bool status;
+    float32_t vector[NUMOFROWS];
+    uint8_t rows;
+    uint8_t arr_cap;
+    bool status;
 } VectorT;
 
 /** \ingroup     KF_algo
     \brief       Matrix type definitions */
 typedef struct
 {
-	float32_t matrix[LEN_OF_MATRIX];
-	uint8_t rows;
-	uint8_t cols;
-	bool status;
+    float32_t matrix[LEN_OF_MATRIX];
+    uint8_t rows;
+    uint8_t cols;
+    bool status;
 } Matrix_T;
 
 /** \ingroup     KF_algo
     \brief       KF type definition */
 typedef struct
 {
-	VectorT control_signal_inp; /*<< Control signal `u` */
-	VectorT y_meas_inp;         /*<< Measurement signal `y` */
-	bool general_status;        /*<< General status indicator */
+    VectorT control_signal_inp; /*<< Control signal `u` */
+    VectorT y_meas_inp;         /*<< Measurement signal `y` */
+    bool general_status;        /*<< General status indicator */
 } Kalman_Filter_T;
 
 /* User function prototypes */

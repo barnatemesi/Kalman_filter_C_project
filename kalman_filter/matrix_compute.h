@@ -14,10 +14,10 @@
     \brief       Matrix type definitions, 2D array variant */
 typedef struct
 {
-	float32_t matrix[NUMOFROWS][NUMOFELE]; // safer to define rows as well
-	uint8_t rows;
-	uint8_t cols;
-	bool status;
+    float32_t matrix[NUMOFROWS][NUMOFELE]; // safer to define rows as well
+    uint8_t rows;
+    uint8_t cols;
+    bool status;
 } MatrixT;
 
 /* Only for matrix * vector */

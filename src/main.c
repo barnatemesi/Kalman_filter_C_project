@@ -31,109 +31,109 @@ char header[100]; // first row buffer
 
 int main(void)
 {
-	/* Init */
-	Ret_T ret_check = NOTVALID;
+    /* Init */
+    Ret_T ret_check = NOTVALID;
 
-	// The system input is a step signal
-	Kalman_Filter_T kf_signals_vector = {
-	        .control_signal_inp =
-	                {
-	                        .vector = {5.0F, 0.0F, 0.0F, 0.0F}, // {5.0F, 0.0F, 0.0F, 0.0F}
-	                        .rows = NUMOFROWS_U,
-	                        .arr_cap = NUMOFROWS,
-	                },
-	        .y_meas_inp =
-	                {
-	                        .vector = {1.0F, 2.0F, 3.0F, 0.0F}, // {1.0F, 2.0F, 3.0F, 0.0F}
-	                        .rows = NUMOFROWS_SENSOR_MEAS,
-	                        .arr_cap = NUMOFROWS,
-	                },
-	        .general_status = true,
-	};
+    // The system input is a step signal
+    Kalman_Filter_T kf_signals_vector = {
+        .control_signal_inp =
+            {
+                .vector = {5.0F, 0.0F, 0.0F, 0.0F}, // {5.0F, 0.0F, 0.0F, 0.0F}
+                .rows = NUMOFROWS_U,
+                .arr_cap = NUMOFROWS,
+            },
+        .y_meas_inp =
+            {
+                .vector = {1.0F, 2.0F, 3.0F, 0.0F}, // {1.0F, 2.0F, 3.0F, 0.0F}
+                .rows = NUMOFROWS_SENSOR_MEAS,
+                .arr_cap = NUMOFROWS,
+            },
+        .general_status = true,
+    };
 
-	/* Global variables */
-	static VectorT vector_x_k_1_state = {
-	        .rows = NUMOFROWS,
-	        .arr_cap = NUMOFROWS,
-	};
-	mw_init_array(vector_x_k_1_state.vector, 0.0F, NUMOFROWS);
+    /* Global variables */
+    static VectorT vector_x_k_1_state = {
+        .rows = NUMOFROWS,
+        .arr_cap = NUMOFROWS,
+    };
+    mw_init_array(vector_x_k_1_state.vector, 0.0F, NUMOFROWS);
 
 #ifndef DEBUG_PRINT
-	/* File handling */
-	fpt = fopen(file_name, "w+");
-	if (fpt == NULL)
-	{
-		printf("File creation has failed!, %s\n", file_name);
-		perror("1 - Error");
-		return -1;
-	}
+    /* File handling */
+    fpt = fopen(file_name, "w+");
+    if (fpt == NULL)
+    {
+        printf("File creation has failed!, %s\n", file_name);
+        perror("1 - Error");
+        return -1;
+    }
 
-	fpt_ref = fopen(ref_file_name, "r");
-	if (fpt_ref == NULL)
-	{
-		printf("File not found, %s\n", ref_file_name);
-		perror("1 - Error");
-		return -1;
-	}
+    fpt_ref = fopen(ref_file_name, "r");
+    if (fpt_ref == NULL)
+    {
+        printf("File not found, %s\n", ref_file_name);
+        perror("1 - Error");
+        return -1;
+    }
 
-	// Writing the first line in the .csv save-file
-	fprintf(fpt, "Idx, omega_spindle, T_mot, T_rider, T_load \n");
+    // Writing the first line in the .csv save-file
+    fprintf(fpt, "Idx, omega_spindle, T_mot, T_rider, T_load \n");
 
-	/* Skipping the header */
-	fscanf(fpt_ref, "%99[^\n]\n", header);
+    /* Skipping the header */
+    fscanf(fpt_ref, "%99[^\n]\n", header);
 #endif
 
-	// Init
-	ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
-	if (!ret_check)
-	{
-		printf("Unexpected error!\n");
-		return -1;
-	}
+    // Init
+    ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
+    if (!ret_check)
+    {
+        printf("Unexpected error!\n");
+        return -1;
+    }
 
-	// Body of the algorithm
-	for (size_t i = 0; i < TIMESTEPS; ++i)
-	{
-		VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector, &vector_x_k_1_state);
+    // Body of the algorithm
+    for (size_t i = 0; i < TIMESTEPS; ++i)
+    {
+        VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector, &vector_x_k_1_state);
 
-		if (!ret_of_kf.status)
-		{
-			printf("An error has occurred during the KF computation!\n");
-		}
+        if (!ret_of_kf.status)
+        {
+            printf("An error has occurred during the KF computation!\n");
+        }
 
 #ifdef DEBUG_PRINT
-		printf("idx is: %d\n", (int)i);
-		printf("ret_of_kf output is:\n");
+        printf("idx is: %d\n", (int)i);
+        printf("ret_of_kf output is:\n");
 
-		print_array(ret_of_kf.vector, ret_of_kf.rows);
+        print_array(ret_of_kf.vector, ret_of_kf.rows);
 
-		printf("***********************************************************\n");
+        printf("***********************************************************\n");
 #else
-		/* Saving data to file */
-		fprintf(fpt,
-		        "%d, %f, %f, %f, %f\n",
-		        (int)i,                       /**< number of row */
-		        (double)ret_of_kf.vector[0],  /**< omega_spindle */
-		        (double)ret_of_kf.vector[1],  /**< T_mot */
-		        (double)ret_of_kf.vector[2],  /**< T_rider */
-		        (double)ret_of_kf.vector[3]); /**< T_load */
+        /* Saving data to file */
+        fprintf(fpt,
+                "%d, %f, %f, %f, %f\n",
+                (int)i,                       /**< number of row */
+                (double)ret_of_kf.vector[0],  /**< omega_spindle */
+                (double)ret_of_kf.vector[1],  /**< T_mot */
+                (double)ret_of_kf.vector[2],  /**< T_rider */
+                (double)ret_of_kf.vector[3]); /**< T_load */
 #endif
-	}
+    }
 
 #ifdef DEBUG
-	printf("***********************************************************\n");
+    printf("***********************************************************\n");
 #endif
 
 #ifndef DEBUG_PRINT
-	fclose(fpt);
-	fclose(fpt_ref);
+    fclose(fpt);
+    fclose(fpt_ref);
 
-	printf("***********************************************************\n");
-	printf("A Kalman filter validation file was successfully created in the Workspace folder under the name of: %s \n",
-	       file_name);
+    printf("***********************************************************\n");
+    printf("A Kalman filter validation file was successfully created in the Workspace folder under the name of: %s \n",
+           file_name);
 #endif
 
-	printf("***********************************************************\n");
+    printf("***********************************************************\n");
 
-	return 0;
+    return 0;
 }
