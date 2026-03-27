@@ -1,195 +1,182 @@
 #include <stdio.h>
+#include "unity.h"
 #include "kalman_filter.h"
 #include "matrix_data.h"
 #include "helper_files.h"
 
-// User defines
-#undef DEBUG
-// #define DEBUG
-
 #define LEN_OF_DATA (512U)
+#define FLOAT_TOLERANCE (0.001F)
 
-/* Declaration of global variables */
+/* File paths */
+static const char output_file_name[] = "kalman_filter_validation.csv";
+static const char ref_file_name[] = "../data/SIM_KF_validation.csv";
 
-/* Ini of variables for file handling */
-const char file_name[] = "kalman_filter_validation.csv";
+/* Shared test state populated by setUp */
+static Kalman_Filter_T kf_signals_vector;
+static VectorT vector_x_k_1_state;
 
-const char ref_file_name[] = "../data/SIM_KF_validation.csv";
+static float32_t signal_no0[LEN_OF_DATA];
+static float32_t signal_no1[LEN_OF_DATA];
+static float32_t signal_no2[LEN_OF_DATA];
+static float32_t signal_no3[LEN_OF_DATA];
 
-FILE *fpt = NULL;
-FILE *fpt_ref = NULL;
+static float32_t ref_signal_no0[LEN_OF_DATA];
+static float32_t ref_signal_no1[LEN_OF_DATA];
+static float32_t ref_signal_no2[LEN_OF_DATA];
+static float32_t ref_signal_no3[LEN_OF_DATA];
 
-char header[100]; // first row buffer
+static size_t num_samples;
+static bool kf_data_ready = false;
 
-int main(void)
+/**
+ * \brief Run the KF over the reference dataset and collect output signals.
+ * \details Called once; results are reused by individual signal tests.
+ */
+static void run_kf_and_load_reference(void)
 {
-    printf("Start of unit testing. Hold tight!\n");
+    if (kf_data_ready)
+    {
+        return;
+    }
 
-    /* Init */
-    Ret_T ret_check = NOTVALID;
-    uint32_t test_fail_counter = 0U;
-
-    /* One pair of `kf_signals_vector` and `vector_x_k_1_state` per one Kalman-filter instance */
-    // The system input is a step signal
-    Kalman_Filter_T kf_signals_vector = {
+    /* KF input: step signal */
+    kf_signals_vector = (Kalman_Filter_T){
         .control_signal_inp =
             {
-                .vector = {5.0F, 0.0F, 0.0F, 0.0F}, // {5.0F, 0.0F, 0.0F, 0.0F}
+                .vector = {5.0F, 0.0F, 0.0F, 0.0F},
                 .rows = NUMOFROWS_U,
                 .arr_cap = NUMOFROWS,
             },
         .y_meas_inp =
             {
-                .vector = {1.0F, 2.0F, 3.0F, 0.0F}, // {1.0F, 2.0F, 3.0F, 0.0F}
+                .vector = {1.0F, 2.0F, 3.0F, 0.0F},
                 .rows = NUMOFROWS_SENSOR_MEAS,
                 .arr_cap = NUMOFROWS,
             },
         .general_status = true,
     };
 
-    /* Delayed state vector */
-    static VectorT vector_x_k_1_state = {
+    vector_x_k_1_state = (VectorT){
         .rows = NUMOFROWS,
         .arr_cap = NUMOFROWS,
     };
     mw_init_array(vector_x_k_1_state.vector, 0.0F, NUMOFROWS);
 
-    /* Vectors to store the results and variables */
-    float32_t signal_no0[LEN_OF_DATA];
-    float32_t signal_no1[LEN_OF_DATA];
-    float32_t signal_no2[LEN_OF_DATA];
-    float32_t signal_no3[LEN_OF_DATA];
     mw_init_array(signal_no0, 0.0F, LEN_OF_DATA);
     mw_init_array(signal_no1, 0.0F, LEN_OF_DATA);
     mw_init_array(signal_no2, 0.0F, LEN_OF_DATA);
     mw_init_array(signal_no3, 0.0F, LEN_OF_DATA);
-
-    float32_t ref_signal_no0[LEN_OF_DATA];
-    float32_t ref_signal_no1[LEN_OF_DATA];
-    float32_t ref_signal_no2[LEN_OF_DATA];
-    float32_t ref_signal_no3[LEN_OF_DATA];
     mw_init_array(ref_signal_no0, 0.0F, LEN_OF_DATA);
     mw_init_array(ref_signal_no1, 0.0F, LEN_OF_DATA);
     mw_init_array(ref_signal_no2, 0.0F, LEN_OF_DATA);
     mw_init_array(ref_signal_no3, 0.0F, LEN_OF_DATA);
 
-    // Init of kf matrices
-    ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
-    if (!ret_check)
-    {
-        printf("Unexpected error!\n");
-        return -1;
-    }
+    Ret_T ret_check = init_kf_matrices(&x_k_1_ini[0], &vector_x_k_1_state);
+    TEST_ASSERT_TRUE_MESSAGE(ret_check, "KF matrix initialisation failed");
 
-    /* File handling */
-    fpt = fopen(file_name, "w+");
-    if (fpt == NULL)
-    {
-        printf("File creation has failed!, %s\n", file_name);
-        perror("1 - Error");
-        return -1;
-    }
+    /* Open reference file */
+    FILE *fpt_ref = fopen(ref_file_name, "r");
+    TEST_ASSERT_NOT_NULL_MESSAGE(fpt_ref, "Could not open reference CSV");
 
-    fpt_ref = fopen(ref_file_name, "r");
-    if (fpt_ref == NULL)
-    {
-        printf("File not found, %s\n", ref_file_name);
-        perror("1 - Error");
-        return -1;
-    }
-
-    // Writing the first line in the .csv save-file
+    /* Open output file */
+    FILE *fpt = fopen(output_file_name, "w+");
+    TEST_ASSERT_NOT_NULL_MESSAGE(fpt, "Could not create output CSV");
     fprintf(fpt, "Idx, omega_spindle, T_mot, T_rider, T_load \n");
 
-    /* Skipping the header */
+    /* Skip header */
+    char header[100];
     fscanf(fpt_ref, "%99[^\n]\n", header);
 
-    /* Body of the algorithm */
     uint32_t row_ID = 0U;
-    size_t i_iter = 0U;
+    num_samples = 0U;
     float32_t w_spindle_ref = 0.0F, T_motor_ref = 0.0F, T_rider_ref = 0.0F, T_load_ref = 0.0F;
 
-    /* Read reference data in from file */
-    while ((i_iter < LEN_OF_DATA) &&
-           fscanf(fpt_ref, "%u, %f, %f, %f, %f", &row_ID, &w_spindle_ref, &T_motor_ref, &T_rider_ref, &T_load_ref) ==
-               (NUMOFROWS + 1))
+    while ((num_samples < LEN_OF_DATA) &&
+           fscanf(fpt_ref, "%u, %f, %f, %f, %f",
+                  &row_ID, &w_spindle_ref, &T_motor_ref, &T_rider_ref, &T_load_ref) == (NUMOFROWS + 1))
     {
         (void)row_ID;
 
-        /* Collect data in arrays */
-        ref_signal_no0[i_iter] = w_spindle_ref;
-        ref_signal_no1[i_iter] = T_motor_ref;
-        ref_signal_no2[i_iter] = T_rider_ref;
-        ref_signal_no3[i_iter] = T_load_ref;
+        ref_signal_no0[num_samples] = w_spindle_ref;
+        ref_signal_no1[num_samples] = T_motor_ref;
+        ref_signal_no2[num_samples] = T_rider_ref;
+        ref_signal_no3[num_samples] = T_load_ref;
 
         VectorT ret_of_kf = kalman_filter_computation(&kf_signals_vector, &vector_x_k_1_state);
+        TEST_ASSERT_TRUE_MESSAGE(ret_of_kf.status, "KF computation returned error status");
 
-        if (!ret_of_kf.status)
-        {
-            printf("An error has occurred during the KF computation!\n");
-            return -1;
-        }
+        fprintf(fpt, "%d, %f, %f, %f, %f\n",
+                (int)num_samples,
+                (double)ret_of_kf.vector[0],
+                (double)ret_of_kf.vector[1],
+                (double)ret_of_kf.vector[2],
+                (double)ret_of_kf.vector[3]);
 
-        /* Saving data to file */
-        fprintf(fpt,
-                "%d, %f, %f, %f, %f\n",
-                (int)i_iter,                  /**< number of row */
-                (double)ret_of_kf.vector[0],  /**< omega_spindle */
-                (double)ret_of_kf.vector[1],  /**< T_mot */
-                (double)ret_of_kf.vector[2],  /**< T_rider */
-                (double)ret_of_kf.vector[3]); /**< T_load */
+        signal_no0[num_samples] = ret_of_kf.vector[0];
+        signal_no1[num_samples] = ret_of_kf.vector[1];
+        signal_no2[num_samples] = ret_of_kf.vector[2];
+        signal_no3[num_samples] = ret_of_kf.vector[3];
 
-        /* Collect data in arrays */
-        signal_no0[i_iter] = ret_of_kf.vector[0]; /**< omega_spindle */
-        signal_no1[i_iter] = ret_of_kf.vector[1]; /**< T_mot */
-        signal_no2[i_iter] = ret_of_kf.vector[2]; /**< T_rider */
-        signal_no3[i_iter] = ret_of_kf.vector[3]; /**< T_load */
-
-        ++i_iter;
+        ++num_samples;
     }
 
-    /* Comparison of reference with generated data */
-    if (!mw_compare_vectors_f32(signal_no0, ref_signal_no0, i_iter))
-    {
-        ++test_fail_counter;
-        printf("Omega spindle test has failed!\n");
-    }
-    if (!mw_compare_vectors_f32(signal_no1, ref_signal_no1, i_iter))
-    {
-        ++test_fail_counter;
-        printf("Motor torque test has failed!\n");
-    }
-    if (!mw_compare_vectors_f32(signal_no2, ref_signal_no2, i_iter))
-    {
-        ++test_fail_counter;
-        printf("Rider torque test has failed!\n");
-    }
-    if (!mw_compare_vectors_f32(signal_no3, ref_signal_no3, i_iter))
-    {
-        ++test_fail_counter;
-        printf("Load torque test has failed!\n");
-    }
-
-    /* Post-processing */
     fclose(fpt);
     fclose(fpt_ref);
 
-    printf("***********************************************************\n");
-    printf("A Kalman filter validation file was successfully created in the Workspace folder under the name of: %s \n",
-           file_name);
+    TEST_ASSERT_GREATER_THAN_UINT32_MESSAGE(0U, (uint32_t)num_samples,
+                                            "No reference data was read");
+    kf_data_ready = true;
+}
 
-    printf("***********************************************************\n");
+/* Unity required hooks */
+void setUp(void)
+{
+    run_kf_and_load_reference();
+}
 
-    if (test_fail_counter == 0U)
+void tearDown(void) {}
+
+/* ---- Individual signal validation tests ---- */
+
+static void assert_signal_matches_reference(const float32_t *actual,
+                                            const float32_t *expected,
+                                            size_t len,
+                                            const char *signal_name)
+{
+    for (size_t i = 0; i < len; ++i)
     {
-        printf("Test has succeeded!\n");
-        printf("Termination of program ...\n");
-        return 0;
+        char msg[128];
+        snprintf(msg, sizeof(msg), "%s mismatch at sample %zu", signal_name, i);
+        TEST_ASSERT_FLOAT_WITHIN_MESSAGE(FLOAT_TOLERANCE, expected[i], actual[i], msg);
     }
-    else
-    {
-        printf("Test has failed!\n");
-        printf("Termination of program ...\n");
-        return -1;
-    }
+}
+
+void test_omega_spindle(void)
+{
+    assert_signal_matches_reference(signal_no0, ref_signal_no0, num_samples, "omega_spindle");
+}
+
+void test_motor_torque(void)
+{
+    assert_signal_matches_reference(signal_no1, ref_signal_no1, num_samples, "T_motor");
+}
+
+void test_rider_torque(void)
+{
+    assert_signal_matches_reference(signal_no2, ref_signal_no2, num_samples, "T_rider");
+}
+
+void test_load_torque(void)
+{
+    assert_signal_matches_reference(signal_no3, ref_signal_no3, num_samples, "T_load");
+}
+
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_omega_spindle);
+    RUN_TEST(test_motor_torque);
+    RUN_TEST(test_rider_torque);
+    RUN_TEST(test_load_torque);
+    return UNITY_END();
 }
