@@ -31,6 +31,8 @@ Versioning is based on:
 
 - optionally: Doxygen (minimum v1.9.7)
 
+- Python 3 with pipenv (for helper scripts)
+
 # Getting started
 Add to your Zephyr project such as:
 ```yaml
@@ -54,6 +56,41 @@ If your project is based on an ARM microcontroller and CMSIS, define the followi
 Note: further optimization might be possible based on your hardware, specially if it's not based on an ARM microcontroller. Please do your due diligence in this regard!
 
 Optionally, re-use functions from `helper_files.h` in your project.
+
+## Python helper scripts
+
+Python-based helper scripts are located in `helper_files/` and managed via pipenv.
+
+### Setup
+```bash
+pipenv install
+```
+
+### Continuous-to-discrete model conversion
+
+`helper_files/continuous_to_discrete.py` converts continuous-time state-space matrices (A, B, C, D) to discrete-time using zero-order hold (ZOH) discretization.
+
+**CLI usage:**
+```bash
+pipenv run python helper_files/continuous_to_discrete.py \
+  --Ts <sampling_period> \
+  --n <num_states> --m <num_inputs> --p <num_outputs> \
+  --A <a11 a12 ...> --B <b11 ...> --C <c11 ...> --D <d11 ...>
+```
+
+**Example** (2-state system at 100 Hz):
+```bash
+pipenv run python helper_files/continuous_to_discrete.py \
+  --Ts 0.01 --n 2 --m 1 --p 1 \
+  --A 0 1 -2 -3 --B 0 1 --C 1 0 --D 0
+```
+
+**As a Python module:**
+```python
+from helper_files.continuous_to_discrete import continuous_to_discrete
+
+A_d, B_d, C_d, D_d = continuous_to_discrete(A_c, B_c, C_c, D_c, Ts)
+```
 
 # Sources
 
